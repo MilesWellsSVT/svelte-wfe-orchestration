@@ -33,7 +33,6 @@ services:
     restart: unless-stopped
   dotnet:
     container_name: demo_be
-    # image: "softbotstest.azurecr.io/svt-softbot-platform:stage"
     image: local/wfe
     environment:
       ConfigurationSettings__PostgresConnectionString: "Host=postgres;Username=postgres;Password=password;Database=postgres"
