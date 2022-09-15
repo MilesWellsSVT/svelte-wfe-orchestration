@@ -50,7 +50,7 @@ services:
     image: "local/svelte-wfe"
     environment:
       WORKFLOW_ENGINE_BASE_URL_SERVER: "http://dotnet/"
-      WORKFLOW_ENGINE_BASE_URL_CLIENT: "http://localhost:5000/"
+      WORKFLOW_ENGINE_BASE_URL_CLIENT: "https://localhost:5000/"
     depends_on:
       - dotnet
   nginx:
