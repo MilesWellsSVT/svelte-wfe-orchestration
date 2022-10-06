@@ -1,0 +1,83 @@
+What are Svelte and SK?
+
+- Single file components make it easier to contextualize what you're doing
+- Just write code. Don't worry about virtual DOM and all that extra stuff
+- Svelte is popular!
+- SK is a full application framework for Svelte
+- Provides SSR, client navigation, file base routing, etc
+
+Why?
+
+- React is pre-transformed JS
+- If you understand JS or even just function purity you can understand React
+- Side-effects (useEffect, etc) can be extreme foot-guns
+- can cause bugs that are difficult to track down (e.g. effects that use intervals)
+- React 18 introduces development behavior to help devs track those down
+- (Simplicity) these potential bugs are a complexity with VDOM 
+- (Simplicity) state management can become complex (categories)
+- (Velocity) again, just write code. don't worry about VDOM. SFC means fewer context switches
+- (Transparency) We already were accomplishing this, it's not going away
+- Normally with SSR you lose client navigation and everything becomes full page
+- SK is a hybrid system. This is where the complexity of SK comes in.
+- SSR enables us to utilize SEO for any public facing applications
+- SEO isn't possible in traditional SPAs since web crawlers don't run JS
+
+Pain points
+
+- First two points are kind of the same. We have an additional resources to orchestrate.
+- The additional infrastructure costs money. Particularly when we host applications ourselves
+- There is, of course, going to be a learning curve in the shift from React to Svelte
+- To ease this, I created the learning repository for SK
+
+SPA/SSR sequence Diagram
+
+- This is more generic than our usage of a SPA in the WFE
+- In the WFE the "static files on server" and the "External Service" are the same server
+
+SPA/SSR - Initial request
+
+- Minimal HTML template (no SEO) and the big JS bundle come back from the initial request
+- After React spins up the initial requests for data go out
+- SSR only returns the server rendered HTML + JS needed for that request
+- SSR goes off to the external service from the SK service
+
+SPA/SSR - Navigation
+
+- SPA can chunk code and pull it when needed (not necessarily during navigation, but usually)
+- SSR has the same behavior as the initial request (calls for more data included in later example)
+
+Client Sided Rendering
+
+- SPA will do everything on the client if the chunks are in cache
+- SSR will do the same, as it caches the SSR'd HTML as well as the hydration logic
+- Requests for additional data in both SPAs and SSR will go directly to the external service
+
+Rendering new code with more data needed
+
+- SPA acts similar to initial request
+- Instead of the initial bundle, it pulls a chunk
+- After the chunk is evaluated, requests for data go out directly to the external service
+- SSR is also similar to the initial request, but will go to the SK server if code OR data only available on the SK server (e.g. env stuff) is needed
+
+Service Diagram
+
+- Only NGINX and PGAdmin are exposed, everything else is inside the network
+- NGINX reverse proxies requests to both SK and the WFE
+- Everything else works the same from that point (e.g. auth)
+- (back to pain points for learning curve) Hitting an external service in containerized environments requires handling two separate URLs for the service -
+  one to hit the WFE directly from the browser (reverse proxy)
+  one to hit the WFE from inside the orchestration (docker container name)
+  Which one to use is determined by SK's `browser` var in its environment module
+
+Sequence Diagram with NGINX
+
+- Initial request is SSR - SK hits the WFE inside of docker
+- CSR example for when nothing is needed from SK server - hitting the WFE directly
+
+Next Steps
+
+- write better README docs
+- harden containerization and actually run it on the pipeline
+- docker-compose for the SK WFE repo for local development
+- Finish app-lab with v1.4.0 behavior
+- Create a template repository with MSAL implemented at the layout level under `src/routes/(auth)`

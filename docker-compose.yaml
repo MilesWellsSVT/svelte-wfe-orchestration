@@ -38,16 +38,13 @@ services:
       ConfigurationSettings__PostgresConnectionString: "Host=postgres;Username=postgres;Password=password;Database=postgres"
       ASPNETCORE_ENVIRONMENT: "QA"
       AzureAdB2C__ClientId: "077c8a1e-47c9-431c-ba6e-8e0f1f2367b9"
-      ASPNETCORE_URLS: "http://+:80"
     volumes:
       - dotnet:/root/.aspnet/DataProtection-Keys
-    ports:
-     - "80:80"
     depends_on:
       - postgres
   sveltekit:
     container_name: demo_fe
-    image: "local/svelte-wfe"
+    image: "softbotstest.azurecr.io/svt-workflow-engine-svelte:latest"
     environment:
       WORKFLOW_ENGINE_BASE_URL_SERVER: "http://dotnet/"
       WORKFLOW_ENGINE_BASE_URL_CLIENT: "https://localhost:5000/"
@@ -69,4 +66,3 @@ volumes:
   pgadmin:
   postgres:
   dotnet:
-
